@@ -32,9 +32,8 @@ age = t_now - b12.to_gyr(readsnap(SNAP, "age", "star"))[sel]
 # 3. Maps
 base = {"dataset": "b12_model2", "snapshot": 69, "galaxy": "lmc", "frame": frame.to_dict(), "t_now_gyr": t_now}
 
-for dt in (0.1):
-    for axes in ("xy", "xz"):
-        m = sfr_map_from_young_stars(pos, mass, age, dt=dt, axes=axes, extent=15.0, bins=30, meta=base)
-        print(axes, dt, "n_young", m.meta["n_young"], "filled px", int((m.counts > 0).sum()))
-
-        m.save(f"{OUT}/lmc_069_sfr_{axes}_dt{int(dt * 1000)}myr.npz")
+dt = 0.1
+for axes in ("xy", "xz"):
+    m = sfr_map_from_young_stars(pos, mass, age, dt=dt, axes=axes, extent=15.0, bins=60, meta=base)
+    print(axes, dt, "n_young", m.meta["n_young"], "filled px", int((m.counts > 0).sum()))
+    m.save(f"{OUT}/lmc_069_sfr_{axes}_dt{int(dt * 1000)}myr.npz")
