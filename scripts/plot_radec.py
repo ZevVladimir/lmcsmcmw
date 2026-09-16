@@ -13,7 +13,7 @@ m = Map2D.load("/xdisk/gbesla/zvladimir/products/b12_model2/lmc_069_sfr_radec_dt
 
 lon0, lon1, lat0, lat1 = m.extent
 dec_center = (lat0 + lat1) / 2.0
-aspect = 1.0 / np.clos(np.radians(dec_center))
+aspect = 1.0 / np.cos(np.radians(dec_center))
 
 show_map(m, log=True, min_counts=1, aspect=aspect)
 
