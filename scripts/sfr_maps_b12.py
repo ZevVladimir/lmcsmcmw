@@ -4,7 +4,8 @@ import os
 from pygadgetreader import readheader, readsnap
 
 from amms.core.analysis.frames import Frame
-from amms.core.analysis.sfr import sfr_map_from_young_stars, sfh
+from amms.core.analysis.sfr import sfr_map_from_young_stars, sfh, sfr_sky_map_from_young_stars
+from amms.core.analysis.sky import radec_from_galactocentric
 from amms.core.datasets import b12
 
 #TODO move to config.paths
@@ -24,7 +25,9 @@ print("center", frame.center, "vs precomputed", b12.LMC_CENTER_069)
 # 2. New stars shifted to the frame defined by initial disk stars
 s_pid = readsnap(SNAP, "pid", "star")
 sel = b12.galaxy_mask(s_pid, "lmc")
-pos = frame.positions(b12.to_kpc(readsnap(SNAP, "pos", "star"))[sel])
+
+star_pos = readsnap(SNAP, "pos", "star")
+pos = frame.positions(b12.to_kpc(star_pos)[sel])
 mass = b12.to_msun(readsnap(SNAP, "mass", "star"))[sel]
 
 # pygadgetreader labels it "stellar Age" but returns formation TIME
@@ -43,3 +46,13 @@ for axes in ("xy", "xz"):
 edges, rates = sfh(age, mass, bins=40, range=(0.0, t_now))
 print(edges)
 print(rates)
+
+# 4. RA/Dec sky map
+pos_galcen = b12.to_kpc(star_pos)[sel] - b12.MW_CENTER
+ra, dec = radec_from_galactocentric(pos_galcen)
+
+m_sky = sfr_sky_map_from_young_stars(ra, dec, mass, age, dt=dt, lon_range=(-10, 115), lat_range=(-85, -40), bins=500, 
+                                     axis_labels=(r"RA [$^\circ$]", r"DEC [$^\circ$]"), meta=base)
+
+print("radec", dt, "n_young", m_sky.meta["n_young"], "filled px", int((m_sky.counts > 0).sum()))
+m_sky.save(f"{OUT}/lmc_069_sfr_radec_dt{int(dt * 1000)}myr.npz")
