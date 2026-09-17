@@ -5,7 +5,7 @@ from pygadgetreader import readheader, readsnap
 
 from amms.core.analysis.frames import Frame
 from amms.core.analysis.sfr import sfr_map_from_young_stars, sfh, sfr_sky_map_from_young_stars
-from amms.core.analysis.sky import radec_from_galactocentric
+from amms.core.analysis.sky import radec_from_galactocentric, sky_bins
 from amms.core.datasets import b12
 
 #TODO move to config.paths
@@ -51,7 +51,14 @@ print(rates)
 pos_galcen = b12.to_kpc(star_pos)[sel] - b12.MW_CENTER
 ra, dec = radec_from_galactocentric(pos_galcen)
 
-m_sky = sfr_sky_map_from_young_stars(ra, dec, mass, age, dt=dt, lon_range=(30, 80), lat_range=(-80, -60), bins=(100,40), 
+lon_range=(30, 80)
+lat_range=(-80, -60)
+
+pix_deg = 0.5
+
+nx, ny = sky_bins(lon_range, lat_range, pix_deg)
+
+m_sky = sfr_sky_map_from_young_stars(ra, dec, mass, age, dt=dt, lon_range=lon_range, lat_range=lat_range, bins=(nx, ny), 
                                      axis_labels=(r"RA [$^\circ$]", r"DEC [$^\circ$]"), meta=base)
 
 print("radec", dt, "n_young", m_sky.meta["n_young"], "filled px", int((m_sky.counts > 0).sum()))
