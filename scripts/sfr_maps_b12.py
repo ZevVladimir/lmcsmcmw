@@ -7,7 +7,7 @@ from amms.core.analysis.frames import Frame
 from amms.core.analysis.sfr import sfr_map_from_young_stars, sfh, sfr_sky_map_from_young_stars
 from amms.core.analysis.sky import radec_from_galactocentric, sky_bins
 from amms.core.analysis.maps import project_lonlat
-from amms.core.datasets import b12
+from amms.core.datasets import b12, patel2020
 from amms.core.config.paths import products_root
 
 #TODO move to config.paths
@@ -25,6 +25,9 @@ frame = Frame.from_tracers(b12.to_kpc(readsnap(SNAP, "pos", "disk"))[sel], reads
 
 print("center", frame.center, "vs precomputed", b12.LMC_CENTER_069)
 
+# Patel+2020's observed Galactocentric center is the actual location while the simulation is slightly offset
+anchor = Frame.translation(b12.LMC_CENTER_069, patel2020.LMC_CENTER, tracers="patel2020_lmc_anchor")
+
 # ---------------------------------------------------------------------------------------------------
 # 2. New stars shifted to the frame defined by initial disk stars
 s_pid = readsnap(SNAP, "pid", "star")
@@ -39,7 +42,7 @@ t_now = float(b12.to_gyr(readheader(SNAP, "time")))
 age = t_now - b12.to_gyr(readsnap(SNAP, "age", "star"))[sel]
 
 # 3. Maps
-base = {"dataset": "b12_model2", "snapshot": 69, "galaxy": "lmc", "frame": frame.to_dict(), "t_now_gyr": t_now, "pa_convention": "line_of_nodes_clouds_demo"}
+base = {"dataset": "b12_model2", "snapshot": 69, "galaxy": "lmc", "frame": frame.to_dict(), "t_now_gyr": t_now, "pa_convention": "line_of_nodes_clouds_demo", "lmc_anchor_patel2020": anchor.to_dict()}
 
 dt = 0.1
 for axes in ("xy", "xz"):
@@ -48,12 +51,10 @@ for axes in ("xy", "xz"):
     m.save(f"{PRODUCTS}/lmc_069_sfr_{axes}_dt{int(dt * 1000)}myr.npz")
 
 edges, rates = sfh(age, mass, bins=40, range=(0.0, t_now))
-print(edges)
-print(rates)
 
 # ---------------------------------------------------------------------------------------------------
 # 4. RA/Dec sky map
-pos_galcen = b12.to_kpc(star_pos)[sel] - b12.MW_CENTER
+pos_galcen = anchor.positions(b12.to_kpc(star_pos)[sel]) - b12.MW_CENTER
 ra, dec = radec_from_galactocentric(pos_galcen)
 
 lon_range=(30, 80)
