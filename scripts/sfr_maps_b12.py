@@ -73,7 +73,7 @@ m_sky.save(f"{PRODUCTS}/lmc_069_sfr_radec_dt{int(dt * 1000)}myr.npz")
 # 5. Ra/Dec density of all LMC stars
 
 m_all = project_lonlat(ra, dec, lon_range=lon_range, lat_range=lat_range, bins=(nx,ny), quantity="n_stars", unit="count",
-                       axis_labels=("RA [$^\circ$]", "DEC [$^\circ$]"), meta=base)
+                       axis_labels=(r"RA [$^\circ$]", r"DEC [$^\circ$]"), meta=base)
 
 m_all.save(f"{PRODUCTS}/lmc_069_radec_allstars.npz")
 
@@ -85,7 +85,7 @@ edges = np.arange(0.0, t_now, dt_slice)
 
 for lo in edges:
     m_slice = sfr_sky_map_from_young_stars(ra, dec, mass, age, dt=dt_slice, age_min=lo, lon_range=lon_range, lat_range=lat_range,
-                                           bins=(nx, ny), axis_labels=("RA [$^\circ$]", "DEC [$^\circ$]"), meta=base)
+                                           bins=(nx, ny), axis_labels=(r"RA [$^\circ$]", r"DEC [$^\circ$]"), meta=base)
 
     hi = lo + dt_slice
     m_slice.save(SLICE_OUT / f"lmc_069_age{int(lo * 1000):03d}-{int(hi*1000):03d}myr.npz")
