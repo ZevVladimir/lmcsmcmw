@@ -20,7 +20,7 @@ PRODUCTS = products_root() / "b12_model2"
 d_pid = readsnap(SNAP, "pid", "disk")
 sel = b12.galaxy_mask(d_pid, "lmc")
 frame = Frame.from_tracers(b12.to_kpc(readsnap(SNAP, "pos", "disk"))[sel], readsnap(SNAP, "vel", "disk")[sel], 
-                           b12.to_msun(readsnap(SNAP, "mass", "disk"))[sel], r_axis=10.0, tracers="b12_lmc_disk_stars", 
+                           b12.to_msun(readsnap(SNAP, "mass", "disk"))[sel], r_axis=10.0, r_center=10.0, tracers="b12_lmc_disk_stars", 
                            reference=b12.PA_REFERENCE_CLOUDS_DEMO)
 
 print("center", frame.center, "vs precomputed", b12.LMC_CENTER_069)
@@ -57,8 +57,8 @@ edges, rates = sfh(age, mass, bins=40, range=(0.0, t_now))
 pos_galcen = anchor.positions(b12.to_kpc(star_pos)[sel]) - b12.MW_CENTER
 ra, dec = radec_from_galactocentric(pos_galcen)
 
-lon_range=(30, 80)
-lat_range=(-80, -60)
+lon_range=(60, 100)
+lat_range=(-75, -60)
 
 pix_deg = 0.5
 
