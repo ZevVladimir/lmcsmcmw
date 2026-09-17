@@ -11,8 +11,9 @@ import matplotlib.pyplot as plt
 
 from amms.core.analysis.maps import Map2D
 from amms.core.plotting.maps import shared_norm, show_map
+from amms.core.config.paths import products_root
 
-PRODUCTS = Path(os.environ["AMMS_PRODUCTS"]) / "b12_model2"
+PRODUCTS = products_root() / "b12_model2"
 FIGS = Path(__file__).resolve().parent.parent / "figures"
 FIGS.mkdir(exist_ok=True)
 
