@@ -80,12 +80,18 @@ m_all.save(f"{PRODUCTS}/lmc_069_radec_allstars.npz")
 # ---------------------------------------------------------------------------------------------------
 # 6. RA/Dec SFR in 5Myr age slices. From 0 to t_now
 SLICE_OUT = PRODUCTS / "sfr_radec_slices"
-dt_slice = 0.005 # in Gyr
+dt_slice = 0.01 # in Gyr
 edges = np.arange(0.0, t_now, dt_slice)
 
-for lo in edges:
+# Time slices based off Mazzi+2024 panels
+custom_edges = [(0.0, 3.98), (3.98, 7.94), (7.94, 15.8), (15.8, 31.6), (31.6, 63.1), (63.1, 126), (126, 251), (251, 398), (398, 631), (631, 1000)]
+
+for edge in custom_edges:
+    dt_slice = (edge[1] - edge[0])/1e3
+    lo = edge[0] / 1e3
     m_slice = sfr_sky_map_from_young_stars(ra, dec, mass, age, dt=dt_slice, age_min=lo, lon_range=lon_range, lat_range=lat_range,
                                            bins=(nx, ny), axis_labels=(r"RA [$^\circ$]", r"DEC [$^\circ$]"), meta=base)
 
-    hi = lo + dt_slice
+    # hi = lo + dt_slice
+    hi = edge[1] / 1e3
     m_slice.save(SLICE_OUT / f"lmc_069_age{int(lo * 1000):03d}-{int(hi*1000):03d}myr.npz")
