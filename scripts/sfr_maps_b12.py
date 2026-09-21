@@ -85,7 +85,7 @@ dt_slice = 0.01 # in Gyr
 edges = np.arange(0.0, t_now, dt_slice)
 
 # Time slices based off Mazzi+2024 panels
-custom_edges = [(0.0, 3.98), (3.98, 7.94), (7.94, 15.8), (15.8, 31.6), (31.6, 63.1), (63.1, 126), (126, 251), (251, 398), (398, 631), (631, 1000)]
+custom_edges = [(0.0, 3.98), (3.98, 7.94), (7.94, 15.8), (15.8, 31.6), (31.6, 63.1), (63.1, 126), (126, 251), (251, 398), (398, 631), (631, 999.9)]
 
 for edge in custom_edges:
     dt_slice = (edge[1] - edge[0])/1e3
