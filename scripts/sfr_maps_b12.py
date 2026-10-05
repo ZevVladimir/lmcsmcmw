@@ -63,8 +63,8 @@ edges, rates = sfh(age, mass, bins=40, range=(0.0, t_now))
 pos_galcen = b12.to_kpc(star_pos)[sel] - b12.MW_CENTER
 ra, dec = radec_from_galactocentric(pos_galcen)
 
-lon_range=(60, 100)
-lat_range=(-75, -60)
+lon_range=(40, 80)
+lat_range=(-77, -60)
 
 pix_deg = 0.5
 
