@@ -42,7 +42,9 @@ t_now = float(b12.to_gyr(readheader(SNAP, "time")))
 age = t_now - b12.to_gyr(readsnap(SNAP, "age", "star"))[sel]
 
 # 3. Maps
-base = {"dataset": "b12_model2", "snapshot": 69, "galaxy": "lmc", "frame": frame.to_dict(), "t_now_gyr": t_now, "pa_convention": "line_of_nodes_clouds_demo", "lmc_anchor_patel2020": anchor.to_dict()}
+# When shifting B12 simulation to where LMC is actually
+# base = {"dataset": "b12_model2", "snapshot": 69, "galaxy": "lmc", "frame": frame.to_dict(), "t_now_gyr": t_now, "pa_convention": "line_of_nodes_clouds_demo", "lmc_anchor_patel2020": anchor.to_dict()}
+base = {"dataset": "b12_model2", "snapshot": 69, "galaxy": "lmc", "frame": frame.to_dict(), "t_now_gyr": t_now, "pa_convention": "line_of_nodes_clouds_demo"}
 
 dt = 0.1
 for axes in ("xy", "xz"):
@@ -54,7 +56,11 @@ edges, rates = sfh(age, mass, bins=40, range=(0.0, t_now))
 
 # ---------------------------------------------------------------------------------------------------
 # 4. RA/Dec sky map
-pos_galcen = anchor.positions(b12.to_kpc(star_pos)[sel]) - b12.MW_CENTER
+# Shift the B12 simulation end location to where the LMC actually is
+# pos_galcen = anchor.positions(b12.to_kpc(star_pos)[sel]) - b12.MW_CENTER
+
+# Keep B12 simulation where it ends
+pos_galcen = b12.to_kpc(star_pos)[sel] - b12.MW_CENTER
 ra, dec = radec_from_galactocentric(pos_galcen)
 
 lon_range=(60, 100)
