@@ -6,3 +6,4 @@ figures/*
 !figures/clouds_ra_dec_simulated.jpg
 !figures/jahn2023_smuggle-1.png
 !figures/mazzi2021_sfr.png
+*.out
