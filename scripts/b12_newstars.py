@@ -21,7 +21,7 @@ ap.add_argument("--overwrite", action="store_true")
 a = ap.parse_args()
 
 snapnum = int(a.snap.name.rsplit("_", 1)[1])
-frame = b12.galaxy_frame(b12.load(a.snap, "dist"), a.galaxy)
+frame = b12.galaxy_frame(b12.load(a.snap, "disk"), a.galaxy)
 print(a.galaxy, "center", frame.center)
 
 s = b12.load(a.snap, "star", a.galaxy, fields=("pos", "mass", "age"))
