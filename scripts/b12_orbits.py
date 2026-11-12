@@ -17,7 +17,7 @@ from amms.core.datasets import b12
 ap = argparse.ArgumentParser()
 ap.add_argument("snapdir", type=Path)
 ap.add_argument("--model", type=int, choices=(1, 2), required=True)
-ap.add_argument("--galaxy", choices=("lmc", "smc"), required=True)
+ap.add_argument("--galaxies", nargs="+", choices=("lmc", "smc"), default=["lmc", "smc"])
 ap.add_argument("--overwrite", action="store_true")
 a = ap.parse_args()
 
