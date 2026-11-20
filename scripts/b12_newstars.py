@@ -21,8 +21,21 @@ ap.add_argument("--overwrite", action="store_true")
 a = ap.parse_args()
 
 snapnum = int(a.snap.name.rsplit("_", 1)[1])
-frame = b12.galaxy_frame(b12.load(a.snap, "disk"), a.galaxy)
+disk = b12.load(a.snap, "disk")
+frame = b12.galaxy_frame(disk, a.galaxy)
 print(a.galaxy, "center", frame.center)
+
+meta = {**b12.conventions(), "galaxy": a.galaxy, "snapshot": snapnum,
+        "t_now_gyr": b12.snapshot_time_gyr(a.snap), "frame": frame.to_dict()}
+
+# Save the initial disk stars, same frame. Used to measure the bar
+disk_mask = b12.galaxy_mask(disk["pid"], a.galaxy)
+products.write_product(
+    f"ext_b12-model{a.model}", "diskstars", f"{a.galaxy}-{snapnum:03d}",
+    {"pos_kpc": frame.positions(disk["pos_kpc"][disk_mask]),
+     "mass_msun": disk["mass_msun"][disk_mask]},
+     source=str(a.snap.resolve()), meta=meta, overwrite=a.overwrite,
+)
 
 s = b12.load(a.snap, "star", a.galaxy, fields=("pos", "mass", "age"))
 keep = b12.formed_in_run(s["t_form_gyr"])
@@ -33,9 +46,7 @@ path = products.write_product(
      "t_form_gyr": s["t_form_gyr"][keep],
      "mass_msun": s["mass_msun"][keep]},
      source=str(a.snap.resolve()),
-     meta={**b12.conventions(), "galaxy": a.galaxy, "snapshot": snapnum,
-           "t_now_gyr": b12.snapshot_time_gyr(a.snap), "frame": frame.to_dict(),
-           "n_dropped_ft0": int((~keep).sum())},
+     meta={**meta, "n_dropped_ft0": int((~keep).sum())},
     overwrite=a.overwrite,
 )
 print(path, int(keep.sum()), "kept,", int((~keep).sum()), "ft==0 dropped")
