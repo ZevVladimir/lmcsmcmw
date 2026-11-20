@@ -20,6 +20,10 @@ ap.add_argument("--galaxy", choices=("lmc", "smc"), required=True)
 ap.add_argument("--overwrite", action="store_true")
 a = ap.parse_args()
 
+if not a.snap.is_file():
+    # snapnum parsed from filename can't just pass a number
+    ap.error(f"{a.snap} is not a snapshot file (pass the full path, e.g. .../snapshot_069)")
+
 snapnum = int(a.snap.name.rsplit("_", 1)[1])
 disk = b12.load(a.snap, "disk")
 frame = b12.galaxy_frame(disk, a.galaxy)
